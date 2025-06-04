@@ -1,0 +1,102 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-rgb: 255, 255, 255;
+}
+
+@font-face {
+  font-family: 'Bahnschrift';
+  src: url('/fonts/bahnshrift/BAHNSCHRIFT.TTF') format('truetype');
+  font-style: normal;
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: 'Bank Sans';
+  src: url('/fonts/bank-sans-bold.otf') format('opentype');
+  font-style: normal;
+  font-weight: bold;
+}
+
+body {
+  font-family: 'Bahnschrift', sans-serif;
+  color: rgb(var(--foreground-rgb));
+  background: rgb(var(--background-rgb));
+} 
+
+.custom-logo {
+  width: 50px;
+  height: auto;
+  border-radius: 8px;
+  transition: transform 0.3s ease-in-out;
+}
+
+.hero-gradient {
+  background-image: linear-gradient(to right, #0b192c, #0875ce);
+  background-blend-mode: overlay;
+  background-size: cover;
+  background-position: center;
+}
+
+.hero-section {
+  position: relative;
+  background-blend-mode: overlay;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 600px;
+  overflow: hidden;
+}
+
+.trophy-img {
+  top: -100px;
+  width: 400px;
+  height: auto;
+  right: 240px;
+}
+
+.players-img {
+  width: 700px;
+  height: auto;
+  position: absolute;
+  float: right;
+  z-index: 0;
+}
+
+.hero-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.9;
+  z-index: 0;
+}
+
+.hero-section > * {
+  position: relative;
+  z-index: 1;
+}
+
+.bfLogo {
+  width: 200px;
+}
+
+.eSHLogo {
+  height: 500px;
+}
+
+.bf-cont{
+  background-image:  url('/bfMiniImg.jpg');
+  background-blend-mode: overlay;
+  background-size: cover;
+  background-position: center;
+}
+
+.nhl-cont{
+  background-image:  url('/nhlImg.jpg');
+  background-blend-mode: overlay;
+  background-size: cover;
+  background-position: center;
+}
