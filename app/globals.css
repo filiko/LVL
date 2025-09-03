@@ -7,29 +7,56 @@
   --background-rgb: 255, 255, 255;
 }
 
+@layer utilities {
+  .scrollbar-transparent {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+  }
+
+  .scrollbar-transparent::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .scrollbar-transparent::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-transparent::-webkit-scrollbar-thumb {
+    background-color: transparent;
+    border-radius: 4px;
+  }
+
+}
+
 @font-face {
   font-family: 'Bahnschrift';
-  src: url('/fonts/bahnshrift/BAHNSCHRIFT.TTF') format('truetype');
-  font-style: normal;
-  font-weight: normal;
+  src: url('/fonts/saira/saira.ttf') format('truetype');
+  font-weight: 1000;
+}
+
+@font-face {
+  font-family: 'Bahnschrift-bold';
+  src: url('/fonts/saira/saira.ttf') format('truetype');
+  font-weight: bold;
 }
 
 @font-face {
   font-family: 'Bank Sans';
-  src: url('/fonts/bank-sans-bold.otf') format('opentype');
+  src: url('/fonts/ruso-one/ruso-one.ttf') format('truetype');
   font-style: normal;
-  font-weight: bold;
+  font-weight: 1000;
+  font-display: swap;
 }
 
 body {
-  font-family: 'Bahnschrift', sans-serif;
+  font-family: 'Saira Semi Condensed', sans-serif;
   color: rgb(var(--foreground-rgb));
   background: rgb(var(--background-rgb));
 } 
 
 .custom-logo {
-  width: 50px;
-  height: auto;
+  width: auto;
+  height: 20px;
   border-radius: 8px;
   transition: transform 0.3s ease-in-out;
 }
@@ -51,18 +78,39 @@ body {
   overflow: hidden;
 }
 
-.trophy-img {
-  top: -100px;
-  width: 400px;
-  height: auto;
-  right: 240px;
+select option {
+  background-color: #12436c;
+  color: white;
+  font-size: 14px;
+  height: 40px;
 }
 
-.players-img {
-  width: 700px;
+
+.trophy-img {
+  margin-top: auto;
+  margin-bottom: auto;
+  width: 400px;
+  height: auto;
+  margin-right: 50px;
+}
+
+.players-img2 {
+  width: 1000px;
+  margin-top: 20px;
   height: auto;
   position: absolute;
   float: right;
+  right: -40px;
+  z-index: 0;
+}
+
+.players-img {
+  width: 600px;
+  margin-top: 70px;
+  height: auto;
+  position: absolute;
+  float: right;
+  right: -40px;
   z-index: 0;
 }
 
@@ -79,12 +127,12 @@ body {
   z-index: 1;
 }
 
-.bfLogo {
+.fav-games-img{
   width: 200px;
-}
-
-.eSHLogo {
-  height: 500px;
+  height: auto;
+  object-fit: cover;
+  margin-right: 20px;
+  border-radius: 7px;
 }
 
 .bf-cont{

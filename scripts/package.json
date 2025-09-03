@@ -1,0 +1,23 @@
+{
+  "name": "levelgg-test-scripts",
+  "version": "1.0.0",
+  "description": "Test data generation scripts for LevelGG",
+  "main": "simulate-users.js",
+  "scripts": {
+    "populate": "node simulate-users.js",
+    "help": "echo 'Available commands:\n  npm run populate - Generate realistic test users and data\n\nMake sure to set environment variables:\n  NEXT_PUBLIC_SUPABASE_URL=your_supabase_url\n  SUPABASE_SERVICE_ROLE_KEY=your_service_role_key'"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.3",
+    "@faker-js/faker": "^8.3.1"
+  },
+  "devDependencies": {},
+  "keywords": [
+    "levelgg",
+    "testing",
+    "data-generation",
+    "supabase"
+  ],
+  "author": "LevelGG",
+  "license": "MIT"
+}

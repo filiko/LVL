@@ -8,6 +8,7 @@ module.exports = {
     extend: {
       fontFamily: {
         bahnschrift: ['Bahnschrift', 'sans-serif'],
+        bahnschrift_bold:['Bahnschrift-bold', 'sans-serif'],
         bank: ['"Bank Sans"', 'sans-serif'],
       },
     },
