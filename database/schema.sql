@@ -12,7 +12,7 @@ CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 -- ====================================
 
 CREATE TYPE player_tier AS ENUM ('BRONZE', 'SILVER', 'GOLD', 'PLATINUM', 'DIAMOND');
-CREATE TYPE tournament_mode AS ENUM ('16v16', '32v32', '64v64');
+CREATE TYPE tournament_mode AS ENUM ('8v8', '16v16', '32v32', '64v64');
 CREATE TYPE platform AS ENUM ('PC', 'XBOX', 'PLAYSTATION');
 CREATE TYPE bracket_type AS ENUM ('SINGLE_ELIMINATION', 'DOUBLE_ELIMINATION', 'ROUND_ROBIN', 'SWISS');
 CREATE TYPE team_role AS ENUM ('CAPTAIN', 'CO_LEADER', 'MEMBER');
@@ -378,13 +378,8 @@ CREATE POLICY "Tournament creators and admins can update tournaments" ON tournam
         )
     );
 
-CREATE POLICY "Team leads and admins can create tournaments" ON tournaments
-    FOR INSERT WITH CHECK (
-        EXISTS (
-            SELECT 1 FROM profiles
-            WHERE id = auth.uid() AND (is_team_lead = true OR is_admin = true)
-        )
-    );
+CREATE POLICY "Any authenticated user can create tournaments" ON tournaments
+    FOR INSERT WITH CHECK (auth.uid() IS NOT NULL);
 
 -- Teams policies
 CREATE POLICY "Anyone can view teams" ON teams

@@ -202,6 +202,23 @@ export async function POST(
       )
     }
 
+            // Check team lead limits (max 2 team leads for all team sizes)
+        if (role === 'CAPTAIN' || role === 'CO_LEADER') {
+          const { data: existingLeads } = await supabase
+            .from('team_members')
+            .select('id')
+            .eq('team_id', params.id)
+            .in('role', ['CAPTAIN', 'CO_LEADER'])
+            .eq('is_active', true)
+
+          if (existingLeads && existingLeads.length >= 2) {
+            return NextResponse.json(
+              { error: 'Teams can have a maximum of 2 team leads (Captain + Co-Leader)' },
+              { status: 400 }
+            )
+          }
+        }
+
     // Add player to team
     const { data: newMember, error } = await supabase
       .from('team_members')

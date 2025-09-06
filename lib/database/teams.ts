@@ -344,6 +344,20 @@ export const teamDb = {
       throw new Error('Player is already a team member')
     }
 
+    // Check team lead limits for 32v32 teams (max 2 team leads)
+    if (memberData.role === 'CAPTAIN' || memberData.role === 'CO_LEADER') {
+      const { data: existingLeads } = await supabase
+        .from('team_members')
+        .select('id')
+        .eq('team_id', teamId)
+        .in('role', ['CAPTAIN', 'CO_LEADER'])
+        .eq('is_active', true)
+
+      if (existingLeads && existingLeads.length >= 2) {
+        throw new Error('32v32 teams can have a maximum of 2 team leads (Captain + Co-Leader)')
+      }
+    }
+
     const { data: newMember, error } = await supabase
       .from('team_members')
       .insert([{

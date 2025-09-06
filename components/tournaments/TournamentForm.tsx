@@ -16,9 +16,9 @@ const GAMES = [
 ];
 
 const MODES = [
-  { value: '16v16', label: '16v16', maxPlayers: 512 },
-  { value: '32v32', label: '32v32', maxPlayers: 1024 },
-  { value: '64v64', label: '64v64', maxPlayers: 2048 }
+  { value: '16v16', label: '16v16', maxPlayers: 32 },   // 16 per team
+  { value: '32v32', label: '32v32', maxPlayers: 64 },   // 32 per team
+  { value: '64v64', label: '64v64', maxPlayers: 128 }   // 64 per team
 ];
 
 const BRACKET_TYPES = [
@@ -39,10 +39,10 @@ export function TournamentForm({
     title: '',
     game_id: 'bf2042',
     mode: '32v32',
-    max_players: 1024,
+    max_players: 64,  // Fixed: 32v32 = 64 total players (32 per team)
     start_date: '',
     end_date: '',
-    region: 'NA',
+    region: 'EAST_COAST',
     platform: 'PC',
     language: 'English',
     bracket_type: 'SINGLE_ELIMINATION',
@@ -187,10 +187,10 @@ export function TournamentForm({
               required
               className="w-full px-3 py-2 bg-[#12436c] border border-[#377cca] rounded text-white focus:outline-none focus:ring-2 focus:ring-[#377cca]"
             >
-              <option value="NA">North America</option>
-              <option value="EU">Europe</option>
-              <option value="ASIA">Asia</option>
-              <option value="OCE">Oceania</option>
+              <option value="EAST_COAST">East Coast</option>
+              <option value="WEST_COAST">West Coast</option>
+              <option value="MIDWEST">Midwest</option>
+              <option value="SOUTH">South</option>
             </select>
           </div>
           

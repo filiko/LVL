@@ -260,7 +260,7 @@ export default function TournamentDetailsPage() {
 
                 {canManageTournament(tournament) && (
                   <button
-                    onClick={() => router.push(`/admin/tournaments/${tournament.id}/manage`)}
+                    onClick={() => router.push(`/battlefield/tournaments/${tournament.id}/manage`)}
                     className="px-4 py-2 bg-gradient-to-r from-[#f59e0b] to-[#d97706] rounded hover:brightness-110 transition"
                   >
                     Manage Tournament

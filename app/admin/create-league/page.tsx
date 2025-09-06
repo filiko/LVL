@@ -13,9 +13,9 @@ const Create32v32League = () => {
   
   const [formData, setFormData] = useState({
     title: '',
-    max_players: 64, // Default for 32v32 (32 per team, 2 teams max)
+    max_players: 64, // Fixed: 32v32 = 64 total players (32 per team)
     mode: '32v32',
-    region: 'NA',
+    region: 'EAST_COAST',
     level: 'ALL',
     platform: 'PC',
     start_date: '',
@@ -168,10 +168,10 @@ const Create32v32League = () => {
                   onChange={handleInputChange}
                   className="w-full p-3 rounded bg-[#0d2645] text-white border border-gray-300 focus:border-blue-500 focus:outline-none"
                 >
-                  <option value="NA">North America</option>
-                  <option value="EU">Europe</option>
-                  <option value="ASIA">Asia</option>
-                  <option value="OCE">Oceania</option>
+                  <option value="EAST_COAST">East Coast</option>
+                  <option value="WEST_COAST">West Coast</option>
+                  <option value="MIDWEST">Midwest</option>
+                  <option value="SOUTH">South</option>
                 </select>
               </div>
 

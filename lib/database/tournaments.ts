@@ -104,9 +104,10 @@ export const tournamentDb = {
 
     // Validate mode and max_players alignment
     const modeMaxPlayers = {
-      '16v16': 512,  // 16 teams * 32 players
-      '32v32': 1024, // 32 teams * 32 players
-      '64v64': 2048  // 64 teams * 32 players
+      '8v8': 16,     // 8 players per team
+      '16v16': 32,   // 16 players per team
+      '32v32': 64,   // 32 players per team
+      '64v64': 128   // 64 players per team
     }
 
     if (tournamentData.max_players && tournamentData.mode) {
@@ -375,6 +376,36 @@ export const tournamentDb = {
       total_teams: tournament.registrations?.length || 0,
       slots_remaining: tournament.max_players - confirmedPlayers
     }
+  }
+
+  // Get tournament registrations for management
+  async getTournamentRegistrations(tournamentId: string) {
+    const supabase = createClient()
+    
+    const { data: registrations, error } = await supabase
+      .from('registrations')
+      .select(`
+        id,
+        tournament_id,
+        team_id,
+        status,
+        registered_at,
+        teams (
+          id,
+          name,
+          member_count,
+          max_members,
+          captain_id,
+          profiles (
+            username
+          )
+        )
+      `)
+      .eq('tournament_id', tournamentId)
+      .order('registered_at', { ascending: false })
+
+    if (error) throw new Error(`Failed to fetch registrations: ${error.message}`)
+    return registrations || []
   }
 }
 

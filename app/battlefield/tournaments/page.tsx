@@ -244,8 +244,8 @@ export default function TournamentsPage() {
               )}
             </div>
 
-            {/* Create Tournament Button (Admin/Team Lead Only) */}
-            {profile && (profile.is_admin || profile.is_team_lead) && (
+            {/* Create Tournament Button (Any logged in user) */}
+            {user && (
               <div className="fixed bottom-6 right-6">
                 <button
                   onClick={() => router.push('/battlefield/tournaments/create')}

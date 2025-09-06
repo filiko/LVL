@@ -81,19 +81,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Check if user can create tournaments (team lead or admin)
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('is_team_lead, is_admin')
-      .eq('id', session.user.id)
-      .single()
-
-    if (!profile?.is_team_lead && !profile?.is_admin) {
-      return NextResponse.json(
-        { error: 'Only team leads and admins can create tournaments' },
-        { status: 403 }
-      )
-    }
+    // Removed overkill authentication - any logged in user can create tournaments
 
     const body = await request.json()
     const {
@@ -125,9 +113,10 @@ export async function POST(request: NextRequest) {
 
     // Validate mode and max_players alignment
     const modeMaxPlayers = {
-      '16v16': 512,  // 16 teams * 32 players
-      '32v32': 1024, // 32 teams * 32 players
-      '64v64': 2048  // 64 teams * 32 players
+      '8v8': 16,     // 8 players per team
+      '16v16': 32,   // 16 players per team
+      '32v32': 64,   // 32 players per team
+      '64v64': 128   // 64 players per team
     }
 
     if (max_players > modeMaxPlayers[mode as keyof typeof modeMaxPlayers]) {

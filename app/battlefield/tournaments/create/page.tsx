@@ -32,9 +32,10 @@ const GAMES = [
 ];
 
 const MODES = [
-  { value: '16v16', label: '16v16', maxPlayers: 512 },
-  { value: '32v32', label: '32v32', maxPlayers: 1024 },
-  { value: '64v64', label: '64v64', maxPlayers: 2048 }
+  { value: '8v8', label: '8v8', maxPlayers: 16 },       // 8 per team
+  { value: '16v16', label: '16v16', maxPlayers: 32 },   // 16 per team
+  { value: '32v32', label: '32v32', maxPlayers: 64 },   // 32 per team
+  { value: '64v64', label: '64v64', maxPlayers: 128 }   // 64 per team
 ];
 
 const BRACKET_TYPES = [
@@ -51,11 +52,11 @@ export default function CreateTournamentPage() {
   const [formData, setFormData] = useState<TournamentForm>({
     title: '',
     game_id: 'bf2042',
-    mode: '32v32',
-    max_players: 1024,
+    mode: '8v8',
+    max_players: 16,  // Fixed: 8v8 = 16 total players (8 per team)
     start_date: '',
     end_date: '',
-    region: 'NA',
+    region: 'EAST_COAST',
     platform: 'PC',
     language: 'English',
     bracket_type: 'SINGLE_ELIMINATION'
@@ -66,12 +67,7 @@ export default function CreateTournamentPage() {
       router.push('/login');
       return;
     }
-    
-    if (!profile?.is_team_lead && !profile?.is_admin) {
-      toast.error('Only team leads and admins can create tournaments');
-      router.push('/battlefield/tournaments');
-      return;
-    }
+    // Removed overkill authentication - any logged in user can create tournaments
   }, [user, profile]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -146,8 +142,8 @@ export default function CreateTournamentPage() {
     }
   };
 
-  if (!user || (!profile?.is_team_lead && !profile?.is_admin)) {
-    return null; // Will redirect
+  if (!user) {
+    return null; // Will redirect to login
   }
 
   return (
@@ -278,10 +274,10 @@ export default function CreateTournamentPage() {
                       required
                       className="w-full px-3 py-2 bg-[#12436c] border border-[#377cca] rounded text-white focus:outline-none focus:ring-2 focus:ring-[#377cca]"
                     >
-                      <option value="NA">North America</option>
-                      <option value="EU">Europe</option>
-                      <option value="ASIA">Asia</option>
-                      <option value="OCE">Oceania</option>
+                      <option value="EAST_COAST">East Coast</option>
+                      <option value="WEST_COAST">West Coast</option>
+                      <option value="MIDWEST">Midwest</option>
+                      <option value="SOUTH">South</option>
                     </select>
                   </div>
                   

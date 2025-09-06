@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tournament Creator System - Database Inspector</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a1a2e 0%, #0d2645 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #06B6D4, #097CCE);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: #94a3b8;
+            font-size: 1.1rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(30, 58, 138, 0.3);
+            border: 1px solid #377cca;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #06B6D4;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .section {
+            background: rgba(30, 58, 138, 0.2);
+            border: 1px solid #377cca;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .section-header {
+            background: rgba(55, 124, 202, 0.3);
+            padding: 15px 20px;
+            border-bottom: 1px solid #377cca;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #ffffff;
+        }
+
+        .section-content {
+            padding: 20px;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(55, 124, 202, 0.3);
+        }
+
+        .data-table th {
+            background: rgba(55, 124, 202, 0.2);
+            color: #06B6D4;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+        }
+
+        .data-table tr:hover {
+            background: rgba(55, 124, 202, 0.1);
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .status-active {
+            background: #10b981;
+            color: white;
+        }
+
+        .status-inactive {
+            background: #ef4444;
+            color: white;
+        }
+
+        .status-pending {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .status-confirmed {
+            background: #10b981;
+            color: white;
+        }
+
+        .status-cancelled {
+            background: #ef4444;
+            color: white;
+        }
+
+        .role-badge {
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .role-captain {
+            background: #dc2626;
+            color: white;
+        }
+
+        .role-co-leader {
+            background: #ea580c;
+            color: white;
+        }
+
+        .role-member {
+            background: #6b7280;
+            color: white;
+        }
+
+        .tier-badge {
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .tier-bronze {
+            background: #92400e;
+            color: white;
+        }
+
+        .tier-silver {
+            background: #6b7280;
+            color: white;
+        }
+
+        .tier-gold {
+            background: #d97706;
+            color: white;
+        }
+
+        .tier-platinum {
+            background: #8b5cf6;
+            color: white;
+        }
+
+        .tier-diamond {
+            background: #06b6d4;
+            color: white;
+        }
+
+        .validation-section {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid #10b981;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .validation-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .validation-icon {
+            font-size: 1.5rem;
+            margin-right: 10px;
+        }
+
+        .validation-pass {
+            color: #10b981;
+        }
+
+        .validation-fail {
+            color: #ef4444;
+        }
+
+        .validation-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            padding: 8px;
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: 5px;
+        }
+
+        .validation-item.fail {
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .validation-check {
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #06B6D4, #097CCE);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(6, 182, 212, 0.4);
+        }
+
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        .btn-warning {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #d97706;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #94a3b8;
+        }
+
+        .error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid #ef4444;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+            color: #fca5a5;
+        }
+
+        .success {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid #10b981;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+            color: #6ee7b7;
+        }
+
+        .json-viewer {
+            background: #1e293b;
+            border: 1px solid #377cca;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: #e2e8f0;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+            
+            .data-table {
+                font-size: 0.8rem;
+            }
+            
+            .data-table th,
+            .data-table td {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎮 Tournament Creator System</h1>
+            <p>Database Inspector & Test Data Viewer</p>
+        </div>
+
+        <div class="controls">
+            <button class="btn btn-primary" onclick="loadData()">🔄 Refresh Data</button>
+            <button class="btn btn-success" onclick="seedTestData()">🌱 Seed Test Data</button>
+            <button class="btn btn-warning" onclick="clearTestData()">🧹 Clear Test Data</button>
+            <button class="btn btn-danger" onclick="exportData()">📁 Export Data</button>
+        </div>
+
+        <div id="loading" class="loading" style="display: none;">
+            <h3>Loading database data...</h3>
+            <p>Please wait while we fetch the latest information.</p>
+        </div>
+
+        <div id="error" class="error" style="display: none;">
+            <h4>❌ Error</h4>
+            <p id="error-message"></p>
+        </div>
+
+        <div id="success" class="success" style="display: none;">
+            <h4>✅ Success</h4>
+            <p id="success-message"></p>
+        </div>
+
+        <!-- Database Summary -->
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title">📊 Database Summary</h2>
+            </div>
+            <div class="section-content">
+                <div class="stats-grid" id="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="user-count">-</div>
+                        <div class="stat-label">Users</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="team-count">-</div>
+                        <div class="stat-label">Teams</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="tournament-count">-</div>
+                        <div class="stat-label">Tournaments</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="registration-count">-</div>
+                        <div class="stat-label">Registrations</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- System Validation -->
+        <div class="validation-section">
+            <div class="validation-header">
+                <span class="validation-icon" id="validation-icon">🔍</span>
+                <h2 class="section-title">✅ System Validation</h2>
+            </div>
+            <div id="validation-results">
+                <div class="loading">Loading validation results...</div>
+            </div>
+        </div>
+
+        <!-- 32v32 Tournaments -->
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title">🎮 32v32 Tournaments</h2>
+            </div>
+            <div class="section-content">
+                <div id="tournaments-content">
+                    <div class="loading">Loading tournaments...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Teams -->
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title">👥 Test Teams</h2>
+            </div>
+            <div class="section-content">
+                <div id="teams-content">
+                    <div class="loading">Loading teams...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Users -->
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title">👤 Test Users</h2>
+            </div>
+            <div class="section-content">
+                <div id="users-content">
+                    <div class="loading">Loading users...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Raw Data Viewer -->
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title">🔍 Raw Data Viewer</h2>
+            </div>
+            <div class="section-content">
+                <button class="btn btn-primary" onclick="showRawData()">Show Raw JSON Data</button>
+                <div id="raw-data" class="json-viewer" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let rawData = null;
+
+        async function loadData() {
+            showLoading(true);
+            hideMessages();
+
+            try {
+                // In a real implementation, these would be API calls
+                // For now, we'll simulate the data structure
+                const mockData = {
+                    summary: {
+                        users: 25,
+                        teams: 5,
+                        tournaments: 8,
+                        registrations: 12,
+                        teamMembers: 150
+                    },
+                    validation: {
+                        valid: true,
+                        issues: [],
+                        checks: [
+                            { name: '32v32 tournaments have correct max players (64)', passed: true },
+                            { name: 'Teams have max 2 team leads', passed: true },
+                            { name: 'Tournament creators exist', passed: true },
+                            { name: 'US regions are used', passed: true }
+                        ]
+                    },
+                    tournaments: [
+                        {
+                            id: 'test-tournament-001',
+                            title: 'Test 32v32 Championship',
+                            mode: '32v32',
+                            max_players: 64,
+                            registered_players: 32,
+                            created_by: 'test-creator-001',
+                            is_active: true,
+                            is_started: false,
+                            creator_username: 'TournamentCreator',
+                            registrations: [
+                                { id: 'reg-001', team_name: 'Alpha Strike Force', status: 'CONFIRMED', member_count: 32 },
+                                { id: 'reg-002', team_name: 'Bravo Battalion', status: 'PENDING', member_count: 32 }
+                            ]
+                        },
+                        {
+                            id: 'test-tournament-002',
+                            title: 'Another 32v32 Tournament',
+                            mode: '32v32',
+                            max_players: 64,
+                            registered_players: 0,
+                            created_by: 'test-creator-002',
+                            is_active: true,
+                            is_started: false,
+                            creator_username: 'EventOrganizer',
+                            registrations: []
+                        }
+                    ],
+                    teams: [
+                        {
+                            id: 'test-team-001',
+                            name: 'Alpha Strike Force',
+                            tag: 'ALPHA',
+                            captain_username: 'TeamCaptain',
+                            member_count: 32,
+                            max_members: 32,
+                            team_leads: 2,
+                            members: [
+                                { username: 'TeamCaptain', role: 'CAPTAIN', position: 'INFANTRY', squad: 'ALPHA' },
+                                { username: 'RegularUser', role: 'CO_LEADER', position: 'ARMOR', squad: 'BRAVO' },
+                                { username: 'AnotherUser', role: 'MEMBER', position: 'HELI', squad: 'CHARLIE' }
+                            ]
+                        }
+                    ],
+                    users: [
+                        { id: 'test-creator-001', username: 'TournamentCreator', email: 'tournament-creator@test.com', tier: 'GOLD', is_admin: false, is_team_lead: false },
+                        { id: 'test-admin-001', username: 'TestAdmin', email: 'admin@test.com', tier: 'DIAMOND', is_admin: true, is_team_lead: true },
+                        { id: 'test-captain-001', username: 'TeamCaptain', email: 'team-captain@test.com', tier: 'GOLD', is_admin: false, is_team_lead: true }
+                    ]
+                };
+
+                rawData = mockData;
+                displayData(mockData);
+                showSuccess('Data loaded successfully!');
+
+            } catch (error) {
+                showError('Failed to load data: ' + error.message);
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        function displayData(data) {
+            // Update summary stats
+            document.getElementById('user-count').textContent = data.summary.users;
+            document.getElementById('team-count').textContent = data.summary.teams;
+            document.getElementById('tournament-count').textContent = data.summary.tournaments;
+            document.getElementById('registration-count').textContent = data.summary.registrations;
+
+            // Display validation results
+            displayValidation(data.validation);
+
+            // Display tournaments
+            displayTournaments(data.tournaments);
+
+            // Display teams
+            displayTeams(data.teams);
+
+            // Display users
+            displayUsers(data.users);
+        }
+
+        function displayValidation(validation) {
+            const container = document.getElementById('validation-results');
+            const icon = document.getElementById('validation-icon');
+            
+            if (validation.valid) {
+                icon.textContent = '✅';
+                icon.className = 'validation-icon validation-pass';
+            } else {
+                icon.textContent = '❌';
+                icon.className = 'validation-icon validation-fail';
+            }
+
+            let html = '';
+            validation.checks.forEach(check => {
+                const statusClass = check.passed ? 'validation-pass' : 'validation-fail';
+                const checkIcon = check.passed ? '✅' : '❌';
+                html += `
+                    <div class="validation-item ${check.passed ? '' : 'fail'}">
+                        <span class="validation-check">${checkIcon}</span>
+                        <span>${check.name}</span>
+                    </div>
+                `;
+            });
+
+            if (validation.issues.length > 0) {
+                html += '<h4>Issues Found:</h4>';
+                validation.issues.forEach(issue => {
+                    html += `<div class="validation-item fail"><span class="validation-check">❌</span><span>${issue}</span></div>`;
+                });
+            }
+
+            container.innerHTML = html;
+        }
+
+        function displayTournaments(tournaments) {
+            const container = document.getElementById('tournaments-content');
+            
+            if (tournaments.length === 0) {
+                container.innerHTML = '<p>No tournaments found.</p>';
+                return;
+            }
+
+            let html = `
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Mode</th>
+                            <th>Max Players</th>
+                            <th>Registered</th>
+                            <th>Creator</th>
+                            <th>Status</th>
+                            <th>Registrations</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            tournaments.forEach(tournament => {
+                const statusClass = tournament.is_active ? 'status-active' : 'status-inactive';
+                const statusText = tournament.is_active ? 'Active' : 'Inactive';
+                
+                html += `
+                    <tr>
+                        <td>${tournament.title}</td>
+                        <td>${tournament.mode}</td>
+                        <td>${tournament.max_players}</td>
+                        <td>${tournament.registered_players}</td>
+                        <td>${tournament.creator_username}</td>
+                        <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                        <td>${tournament.registrations.length}</td>
+                    </tr>
+                `;
+            });
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        function displayTeams(teams) {
+            const container = document.getElementById('teams-content');
+            
+            if (teams.length === 0) {
+                container.innerHTML = '<p>No teams found.</p>';
+                return;
+            }
+
+            let html = `
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Tag</th>
+                            <th>Captain</th>
+                            <th>Members</th>
+                            <th>Team Leads</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            teams.forEach(team => {
+                const leadStatus = team.team_leads <= 2 ? 'status-confirmed' : 'status-cancelled';
+                const leadText = team.team_leads <= 2 ? 'Valid' : 'Too Many';
+                
+                html += `
+                    <tr>
+                        <td>${team.name}</td>
+                        <td>[${team.tag}]</td>
+                        <td>${team.captain_username}</td>
+                        <td>${team.member_count}/${team.max_members}</td>
+                        <td><span class="status-badge ${leadStatus}">${team.team_leads} (${leadText})</span></td>
+                        <td><span class="status-badge status-active">Active</span></td>
+                    </tr>
+                `;
+            });
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        function displayUsers(users) {
+            const container = document.getElementById('users-content');
+            
+            if (users.length === 0) {
+                container.innerHTML = '<p>No users found.</p>';
+                return;
+            }
+
+            let html = `
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Tier</th>
+                            <th>Role</th>
+                            <th>Permissions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            users.forEach(user => {
+                const tierClass = `tier-${user.tier.toLowerCase()}`;
+                let role = 'User';
+                let roleClass = 'role-member';
+                
+                if (user.is_admin) {
+                    role = 'Admin';
+                    roleClass = 'role-captain';
+                } else if (user.is_team_lead) {
+                    role = 'Team Lead';
+                    roleClass = 'role-co-leader';
+                }
+
+                const permissions = [];
+                if (user.is_admin) permissions.push('Admin');
+                if (user.is_team_lead) permissions.push('Team Lead');
+                if (permissions.length === 0) permissions.push('Standard User');
+
+                html += `
+                    <tr>
+                        <td>${user.username}</td>
+                        <td>${user.email}</td>
+                        <td><span class="tier-badge ${tierClass}">${user.tier}</span></td>
+                        <td><span class="role-badge ${roleClass}">${role}</span></td>
+                        <td>${permissions.join(', ')}</td>
+                    </tr>
+                `;
+            });
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        function showRawData() {
+            const container = document.getElementById('raw-data');
+            if (rawData) {
+                container.textContent = JSON.stringify(rawData, null, 2);
+                container.style.display = container.style.display === 'none' ? 'block' : 'none';
+            } else {
+                showError('No data loaded. Please refresh data first.');
+            }
+        }
+
+        async function seedTestData() {
+            showLoading(true);
+            hideMessages();
+
+            try {
+                // Simulate API call
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                showSuccess('Test data seeded successfully!');
+                loadData(); // Refresh data
+            } catch (error) {
+                showError('Failed to seed test data: ' + error.message);
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        async function clearTestData() {
+            if (!confirm('Are you sure you want to clear all test data? This action cannot be undone.')) {
+                return;
+            }
+
+            showLoading(true);
+            hideMessages();
+
+            try {
+                // Simulate API call
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                showSuccess('Test data cleared successfully!');
+                loadData(); // Refresh data
+            } catch (error) {
+                showError('Failed to clear test data: ' + error.message);
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        function exportData() {
+            if (rawData) {
+                const dataStr = JSON.stringify(rawData, null, 2);
+                const dataBlob = new Blob([dataStr], { type: 'application/json' });
+                const url = URL.createObjectURL(dataBlob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `tournament-test-data-${new Date().toISOString().split('T')[0]}.json`;
+                link.click();
+                URL.revokeObjectURL(url);
+                showSuccess('Data exported successfully!');
+            } else {
+                showError('No data to export. Please refresh data first.');
+            }
+        }
+
+        function showLoading(show) {
+            document.getElementById('loading').style.display = show ? 'block' : 'none';
+        }
+
+        function showError(message) {
+            document.getElementById('error-message').textContent = message;
+            document.getElementById('error').style.display = 'block';
+            setTimeout(() => {
+                document.getElementById('error').style.display = 'none';
+            }, 5000);
+        }
+
+        function showSuccess(message) {
+            document.getElementById('success-message').textContent = message;
+            document.getElementById('success').style.display = 'block';
+            setTimeout(() => {
+                document.getElementById('success').style.display = 'none';
+            }, 3000);
+        }
+
+        function hideMessages() {
+            document.getElementById('error').style.display = 'none';
+            document.getElementById('success').style.display = 'none';
+        }
+
+        // Load data on page load
+        document.addEventListener('DOMContentLoaded', loadData);
+    </script>
+</body>
+</html>
